@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Angular Capslock Detective Directive</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .container{
+            margin-top:20px;
+        }
+        .warningMessage {
+		    display: none;
+		}
+
+		[capslock].capslockIsOn + .warningMessage {
+		    display: block;
+		    color: red;
+		}
+		
+	</style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+
+<body ng-app="CapslockDetection" ng-controller="CapslockDetectionController">
+    <div class="container">
+        <h4 class="text-center">Angular Directive To Detect Capslock</h4>
+        <div class="panel panel-default panel-body">
+            <form>
+                <div class="form-group">
+                    <label for="userEmail">EmailId</label>
+                    <input type="email" class="form-control" id="userEmail" placeholder="Email" name="userPassword" />
+                </div>
+                <div class="form-group">
+                    <label for="userPassword">Password</label>
+                    <input type="password" class="form-control" id="userPassword" placeholder="Enter password" name="userPassword" capslock />
+                    <span class="warningMessage">Capslock is On!</span>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" name="remember" ng-click="togglePasswordFieldType()"> Show Password</label>
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+        </div>
+    </div>
+    <script>
+    var app = angular.module('CapslockDetection', []);
+    app.controller('CapslockDetectionController', function($scope) {
+        $scope.togglePasswordFieldType = function() {
+            var elem = document.getElementById("userPassword");
+            if (elem.type === "password") {
+                elem.type = "text";
+            } else {
+                elem.type = "password";
+            }
+        }
+    });
+    app.directive("capslock", function($compile) {
+        return {
+            restrict: "A",
+            link: function(scope, elem, attrs) {
+                elem.on("keyup", function(event) {
+
+                    if (event.getModifierState("CapsLock")) {
+                        angular.element(elem).addClass('capslockIsOn');
+                    } else {
+                        angular.element(elem).removeClass('capslockIsOn');
+                    }
+                });
+            }
+        };
+    });
+    </script>
+</body>
+
+</html>
